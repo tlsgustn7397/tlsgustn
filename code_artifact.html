@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ko" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 테스트 & 실험실 (Dev Sandbox)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-full flex flex-col transition-colors duration-200">
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-30 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+                    <i class="fa-solid fa-vial-circle-check text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-none">Dev Test Lab</h1>
+                    <span class="text-xs text-slate-500 dark:text-slate-400">웹 구성요소 테스트 환경</span>
+                </div>
+            </div>
+
+            <!-- Theme Toggle & Quick Actions -->
+            <div class="flex items-center space-x-3">
+                <button id="themeToggle" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
+                </button>
+                <button onclick="showToast('알림 테스트 메시지입니다!', 'info')" class="hidden sm:inline-flex items-center px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm">
+                    <i class="fa-solid fa-bell mr-2 text-blue-500"></i> 토스트 실행
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Hero Banner -->
+        <div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white shadow-lg relative overflow-hidden">
+            <div class="relative z-10">
+                <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">통합 웹 컴포넌트 테스트베드</h2>
+                <p class="text-blue-100 max-w-2xl text-sm sm:text-base">이 페이지는 다양한 UI 요소, 이벤트 핸들러, API 인터랙션, 로컬 스토리지 데이터 동기화 등을 즉각적으로 실험해 볼 수 있는 인터랙티브 환경입니다.</p>
+            </div>
+            <div class="absolute right-0 bottom-0 translate-x-8 translate-y-8 opacity-10 text-9xl font-bold select-none">
+                TEST
+            </div>
+        </div>
+
+        <!-- Dashboard Grid Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- 1. Interactive Counter Card -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold text-lg flex items-center">
+                            <i class="fa-solid fa-calculator text-blue-500 mr-2"></i> 인터랙티브 카운터
+                        </h3>
+                        <span class="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 px-2 py-1 rounded-md font-mono">State</span>
+                    </div>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">상태 관리 및 즉각적인 UI 업데이트 동작을 확인합니다.</p>
+                </div>
+                <div>
+                    <div class="text-center py-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl mb-6">
+                        <span id="counterValue" class="text-5xl font-black text-slate-800 dark:text-white transition-all">0</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button id="btnDecrement" class="py-2.5 px-4 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-xl font-bold transition text-slate-700 dark:text-slate-200">
+                            <i class="fa-solid fa-minus"></i>
+                        </button>
+                        <button id="btnReset" class="py-2.5 px-4 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-xl text-xs font-semibold transition text-slate-500 dark:text-slate-400">
+                            초기화
+                        </button>
+                        <button id="btnIncrement" class="py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition shadow-sm">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Form Input & Validation Card -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-lg flex items-center">
+                        <i class="fa-solid fa-check-double text-green-500 mr-2"></i> 폼 유효성 검사
+                    </h3>
+                    <span class="text-xs bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300 px-2 py-1 rounded-md font-mono">Validation</span>
+                </div>
+                <form id="testForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">사용자 이름</label>
+                        <input type="text" id="usernameInput" required placeholder="홍길동" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">이메일 주소</label>
+                        <input type="email" id="emailInput" required placeholder="user@example.com" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">비밀번호 (8자 이상)</label>
+                        <input type="password" id="passwordInput" minlength="8" required placeholder="••••••••" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                    </div>
+                    <button type="submit" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition shadow-sm">
+                        전송 및 제출 검증
+                    </button>
+                </form>
+            </div>
+
+            <!-- 3. API Fetch Simulator -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between md:col-span-2 lg:col-span-1">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold text-lg flex items-center">
+                            <i class="fa-solid fa-cloud-arrow-down text-purple-500 mr-2"></i> API 요청 시뮬레이터
+                        </h3>
+                        <span class="text-xs bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300 px-2 py-1 rounded-md font-mono">Async</span>
+                    </div>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">비동기 데이터 패치 및 로딩 상태를 시뮬레이션합니다.</p>
+                </div>
+                <div>
+                    <div id="apiOutput" class="h-32 bg-slate-900 text-green-400 p-3 rounded-xl font-mono text-xs overflow-y-auto mb-4 border border-slate-800 custom-scrollbar relative">
+                        <span class="text-slate-500">// 버튼을 눌러 비동기 데이터를 호출해보세요.</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="btnFetchData" onclick="fetchDummyData()" class="flex-1 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-sm font-semibold transition flex items-center justify-center">
+                            <i class="fa-solid fa-rotate text-xs mr-2" id="apiSpinner"></i> 데이터 호출
+                        </button>
+                        <button onclick="clearApiOutput()" class="px-3.5 py-2.5 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl text-sm transition">
+                            지우기
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Modal & Toast Triggers -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-lg flex items-center">
+                        <i class="fa-solid fa-window-restore text-amber-500 mr-2"></i> 모달 & 피드백 UI
+                    </h3>
+                    <span class="text-xs bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 px-2 py-1 rounded-md font-mono">Feedback</span>
+                </div>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">사용자 대화상자 및 토스트 알림을 테스트합니다.</p>
+                <div class="space-y-2.5">
+                    <button onclick="openModal()" class="w-full py-2.5 px-4 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 rounded-xl text-sm font-medium transition text-left flex items-center justify-between">
+                        <span><i class="fa-regular fa-window-maximize mr-2 text-amber-500"></i> 대화상자 모달 열기</span>
+                        <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                    </button>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="showToast('성공적으로 저장되었습니다!', 'success')" class="py-2 px-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 rounded-xl text-xs font-semibold hover:bg-emerald-100 transition">
+                            성공 알림
+                        </button>
+                        <button onclick="showToast('경고: 네트워크 상태 확인 필요', 'warning')" class="py-2 px-2 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 rounded-xl text-xs font-semibold hover:bg-amber-100 transition">
+                            경고 알림
+                        </button>
+                        <button onclick="showToast('오류가 발생했습니다!', 'error')" class="py-2 px-2 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 rounded-xl text-xs font-semibold hover:bg-rose-100 transition">
+                            에러 알림
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Code Playground Component -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm md:col-span-2">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-lg flex items-center">
+                        <i class="fa-solid fa-code text-cyan-500 mr-2"></i> 실시간 라이브 코드 실행기
+                    </h3>
+                    <span class="text-xs bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300 px-2 py-1 rounded-md font-mono">Live Render</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 mb-1">HTML/JS 코드 입력</label>
+                        <textarea id="liveCodeInput" rows="5" class="w-full p-3 font-mono text-xs bg-slate-900 text-slate-200 rounded-xl border border-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 custom-scrollbar" placeholder="HTML 또는 실행할 스크립트를 입력하세요..."><div class="p-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-lg shadow-md">
+  <h4 class="font-bold">라이브 프리뷰 테스트</h4>
+  <p class="text-xs mt-1">이 영역은 실시간으로 랜더링됩니다.</p>
+</div></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 mb-1">실시간 미리보기</label>
+                        <div id="livePreview" class="h-[122px] p-3 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900 overflow-auto custom-scrollbar">
+                            <!-- Live content rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Filterable & Sortable Data Table -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm lg:col-span-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h3 class="font-semibold text-lg flex items-center">
+                            <i class="fa-solid fa-table-list text-indigo-500 mr-2"></i> 동적 데이터 테이블
+                        </h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">검색 필터링 및 컬럼 정렬 기능 테스트</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="relative flex-1 sm:w-64">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="검색어 입력..." class="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 dark:bg-slate-900/50 text-slate-500 uppercase text-xs font-semibold">
+                            <tr>
+                                <th class="px-4 py-3 rounded-l-lg cursor-pointer hover:text-slate-700 dark:hover:text-slate-200" onclick="sortTable(0)">
+                                    ID <i class="fa-solid fa-sort ml-1"></i>
+                                </th>
+                                <th class="px-4 py-3 cursor-pointer hover:text-slate-700 dark:hover:text-slate-200" onclick="sortTable(1)">
+                                    이름 <i class="fa-solid fa-sort ml-1"></i>
+                                </th>
+                                <th class="px-4 py-3 cursor-pointer hover:text-slate-700 dark:hover:text-slate-200" onclick="sortTable(2)">
+                                    역할 <i class="fa-solid fa-sort ml-1"></i>
+                                </th>
+                                <th class="px-4 py-3 cursor-pointer hover:text-slate-700 dark:hover:text-slate-200" onclick="sortTable(3)">
+                                    상태 <i class="fa-solid fa-sort ml-1"></i>
+                                </th>
+                                <th class="px-4 py-3 text-right rounded-r-lg">작업</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                            <!-- Table rows dynamically populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal Dialog -->
+    <div id="modalOverlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 m-4 transform scale-95 transition-transform duration-200" id="modalBox">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold">테스트 대화상자</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <p class="text-slate-600 dark:text-slate-300 text-sm mb-6 leading-relaxed">
+                모달 대화상자 레이어 테스트입니다. 배경 블러 처리 및 키보드 ESC 수신 이벤트가 적용되어 있습니다.
+            </p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeModal()" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-medium transition">
+                    취소
+                </button>
+                <button onclick="closeModal(); showToast('확인 되었습니다.', 'success');" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition shadow-sm">
+                    확인
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+    <script>
+        // --- State Management ---
+        let counter = 0;
+        const usersData = [
+            { id: 101, name: "김철수", role: "프론트엔드 개발자", status: "활성" },
+            { id: 102, name: "이영희", role: "UI/UX 디자이너", status: "휴가중" },
+            { id: 103, name: "박민수", role: "백엔드 개발자", status: "활성" },
+            { id: 104, name: "정수진", role: "프로덕트 매니저", status: "비활성" },
+            { id: 105, name: "최동현", role: "DevOps 엔지니어", status: "활성" }
+        ];
+
+        // --- Theme Toggle Logic ---
+        const themeToggleBtn = document.getElementById('themeToggle');
+        
+        function initTheme() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        });
+
+        // --- Counter Controls ---
+        const counterValEl = document.getElementById('counterValue');
+        
+        document.getElementById('btnIncrement').addEventListener('click', () => {
+            counter++;
+            updateCounter();
+        });
+
+        document.getElementById('btnDecrement').addEventListener('click', () => {
+            counter--;
+            updateCounter();
+        });
+
+        document.getElementById('btnReset').addEventListener('click', () => {
+            counter = 0;
+            updateCounter();
+        });
+
+        function updateCounter() {
+            counterValEl.textContent = counter;
+            counterValEl.classList.add('scale-125', 'text-blue-500');
+            setTimeout(() => {
+                counterValEl.classList.remove('scale-125', 'text-blue-500');
+            }, 150);
+        }
+
+        // --- Form Submission ---
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('usernameInput').value;
+            const email = document.getElementById('emailInput').value;
+            showToast(`[성공] ${name} (${email}) 님의 정보가 제출되었습니다.`, 'success');
+            e.target.reset();
+        }
+
+        // --- API Simulator ---
+        function fetchDummyData() {
+            const output = document.getElementById('apiOutput');
+            const spinner = document.getElementById('apiSpinner');
+            
+            spinner.classList.add('fa-spin');
+            output.innerHTML = `<span class="text-yellow-400">> GET /api/v1/users/sample...</span>\n<span class="text-slate-400">요청 처리 중...</span>`;
+
+            setTimeout(() => {
+                spinner.classList.remove('fa-spin');
+                const mockResponse = {
+                    status: 200,
+                    message: "OK",
+                    timestamp: new Date().toISOString(),
+                    payload: {
+                        id: Math.floor(Math.random() * 9000) + 1000,
+                        token: "jwt_mock_token_" + Math.random().toString(36).substring(7),
+                        active: true
+                    }
+                };
+                output.innerHTML = `<span class="text-green-400">HTTP/1.1 200 OK</span>\n` + JSON.stringify(mockResponse, null, 2);
+                showToast('API 응답을 성공적으로 수신했습니다.', 'info');
+            }, 1000);
+        }
+
+        function clearApiOutput() {
+            document.getElementById('apiOutput').innerHTML = `<span class="text-slate-500">// 출력 결과가 초기화되었습니다.</span>`;
+        }
+
+        // --- Modal Control ---
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalBox = document.getElementById('modalBox');
+
+        function openModal() {
+            modalOverlay.classList.remove('hidden');
+            setTimeout(() => {
+                modalOverlay.classList.remove('opacity-0');
+                modalBox.classList.remove('scale-95');
+                modalBox.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            modalOverlay.classList.add('opacity-0');
+            modalBox.classList.remove('scale-100');
+            modalBox.classList.add('scale-95');
+            setTimeout(() => {
+                modalOverlay.classList.add('hidden');
+            }, 200);
+        }
+
+        // Close Modal on ESC key
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modalOverlay.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+
+        // --- Toast Notification ---
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let bgBg = 'bg-slate-800 text-white';
+            let icon = 'fa-circle-info text-blue-400';
+
+            if (type === 'success') {
+                icon = 'fa-circle-check text-emerald-400';
+            } else if (type === 'warning') {
+                icon = 'fa-triangle-exclamation text-amber-400';
+            } else if (type === 'error') {
+                icon = 'fa-circle-xmark text-rose-400';
+            }
+
+            toast.className = `pointer-events-auto flex items-center space-x-3 px-4 py-3 rounded-xl shadow-lg border border-slate-700/50 ${bgBg} transform translate-y-4 opacity-0 transition-all duration-300 max-w-sm text-xs sm:text-sm`;
+            toast.innerHTML = `
+                <i class="fa-solid ${icon} text-base"></i>
+                <span class="flex-1">${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-4', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // --- Live Code Playground ---
+        const codeInput = document.getElementById('liveCodeInput');
+        const livePreview = document.getElementById('livePreview');
+
+        function updateLivePreview() {
+            livePreview.innerHTML = codeInput.value;
+        }
+
+        codeInput.addEventListener('input', updateLivePreview);
+
+        // --- Data Table Functions ---
+        function renderTable(data) {
+            const tbody = document.getElementById('dataTableBody');
+            tbody.innerHTML = '';
+
+            data.forEach(user => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition';
+                
+                let statusBadge = user.status === '활성' 
+                    ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'
+                    : user.status === '휴가중'
+                    ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300'
+                    : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400';
+
+                tr.innerHTML = `
+                    <td class="px-4 py-3 font-mono text-xs text-slate-400">#${user.id}</td>
+                    <td class="px-4 py-3 font-medium">${user.name}</td>
+                    <td class="px-4 py-3 text-slate-500 dark:text-slate-400">${user.role}</td>
+                    <td class="px-4 py-3">
+                        <span class="inline-block text-xs px-2.5 py-0.5 rounded-full font-semibold ${statusBadge}">
+                            ${user.status}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                        <button onclick="showToast('${user.name} 님 선택됨', 'info')" class="text-blue-500 hover:text-blue-700 font-medium text-xs">
+                            조회
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterTable() {
+            const query = document.getElementById('tableSearch').value.toLowerCase();
+            const filtered = usersData.filter(u => 
+                u.name.toLowerCase().includes(query) || 
+                u.role.toLowerCase().includes(query) ||
+                u.status.toLowerCase().includes(query)
+            );
+            renderTable(filtered);
+        }
+
+        let sortAsc = true;
+        function sortTable(colIndex) {
+            const keys = ['id', 'name', 'role', 'status'];
+            const key = keys[colIndex];
+            
+            usersData.sort((a, b) => {
+                if (a[key] < b[key]) return sortAsc ? -1 : 1;
+                if (a[key] > b[key]) return sortAsc ? 1 : -1;
+                return 0;
+            });
+            
+            sortAsc = !sortAsc;
+            renderTable(usersData);
+        }
+
+        // Initialize App
+        window.onload = function() {
+            initTheme();
+            updateLivePreview();
+            renderTable(usersData);
+        };
+    </script>
+</body>
+</html>
